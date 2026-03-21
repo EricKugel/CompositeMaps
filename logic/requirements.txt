@@ -1,2 +1,10 @@
-numpy
 matplotlib
+pytesseract
+
+# for llm
+numpy<2
+transformers
+torch
+huggingface_hub
+accelerate
+bitsandbytes
