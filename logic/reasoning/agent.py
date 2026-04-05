@@ -1,5 +1,6 @@
 """
-General llm agent code. Using a local llm right now but eventually I'll need to use an API likely
+General llm agent code. Using a local llm right now but eventually I'll need to use an API likely,
+especially a large language/visual model.
 """
 
 from huggingface_hub import login
@@ -11,20 +12,28 @@ with open("data/keys/keys.json", "r") as file:
 login(keys["hugging_face_login"])
 
 # cuda opt
+torch_dtype=torch.float16
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
 torch.set_float32_matmul_precision("high")
-
-quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4"
+)
 model_name = "meta-llama/Llama-3.1-8B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 tokenizer.pad_token = tokenizer.eos_token
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    device_map="auto",
-    quantization_config=quantization_config
+    device_map="cpu",
+    quantization_config=quantization_config,
+    low_cpu_mem_usage=True,
+    max_memory={0: "10GiB", "cpu": "32GiB"}
 )
+model.to("cuda")
 
 model.eval()
 

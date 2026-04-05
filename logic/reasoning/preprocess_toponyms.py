@@ -11,6 +11,8 @@ building names, natural feature names like lake names, river names, or mountain 
 etc. Each of the names you pick should be easily searchable to find their real life
 locations. You never output a feature name that is not present in the text. You never
 provide any extraneous formatting or commentary. You always put one searchable name per line.
+You never pick any name that is too short or not searchable. You never pick any
+name that looks like noise from the ocr. Not every word provided from the map will be relevant.
 """)
 
 def prepare_for_search(text: str) -> str:
