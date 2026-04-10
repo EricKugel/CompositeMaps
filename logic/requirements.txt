@@ -1,5 +1,6 @@
 matplotlib
 pytesseract
+requests
 
 # for llm
 numpy<2
